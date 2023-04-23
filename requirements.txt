@@ -1,0 +1,9 @@
+pywin32==303
+opencv-python
+pymem
+numpy
+pillow
+PyQt5
+mss
+global-hotkeys
+pyautogui
