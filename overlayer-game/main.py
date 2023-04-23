@@ -8,10 +8,12 @@ from PyQt5.QtWidgets import QApplication
 import sys
 
 RADIUS = 17
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
 
 class GunboundProcess:
-    def __init__(self, process):
-        self.process = process
+	def __init__(self, process):
+		self.process = process
 
 def determine_client_area_rect(hwnd):
     left, top, right, bottom = GetClientRect(hwnd)
@@ -30,17 +32,15 @@ def create_image_with_size(width, height):
     image = np.full((height, width, 4), (0, 0, 0, 0), dtype=np.uint8)
     return image
 
-def drawCircle(image):
-	x, y = GetCursorPos()
-	print(x, y)
-	cv.circle(image, (x, y), RADIUS, (0, 0, 255, 255), thickness=1)
+def drawCircle(image, window):
+	cursor_position = GetCursorPos()
+	client_area_rect = determine_client_area_rect(window)
+	cv.circle(image, (cursor_position[0] - client_area_rect['left'], cursor_position[1] - client_area_rect['top']), RADIUS, (0, 0, 255, 255), thickness=1)
 	
 
 def main () :
 	window = FindWindow(None, 'GunBound')
-	print("aaaaaaa",window)
 	process = GunboundProcess(Pymem('gitzgame.gme'))
-	print("bbbbbbb",process)
 
 	application = QApplication(sys.argv)
 	transparent_window = TransparentWindow()
@@ -65,7 +65,7 @@ def main () :
         
 		image = create_image_with_size(client_area_rect['width'], client_area_rect['height'])
 
-		drawCircle(image)
+		drawCircle(image, window)
 			    
 		image[0, 0] = (0, 0, 255, 255)
 
